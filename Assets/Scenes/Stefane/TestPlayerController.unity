@@ -515,7 +515,7 @@ Transform:
   m_GameObject: {fileID: 1254160753}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.47936893, y: -0.94135857, z: 5.219611}
+  m_LocalPosition: {x: 3, y: 6.141, z: 8.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -698,6 +698,70 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1207027303}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1913596010
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1913596012}
+  - component: {fileID: 1913596011}
+  m_Layer: 0
+  m_Name: BlockGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1913596011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913596010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59d0d8f767241924585eeadcaee15252, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  noiseSettings:
+    normalizeMode: 0
+    scale: 50
+    octaves: 6
+    persistance: 0.6
+    lacunarity: 2
+    seed: 0
+    offset: {x: 0, y: 0}
+  sampleCentre: {x: 0, y: 0}
+  chunkSize: 9
+  maxTerrainHeight: 15
+  dirtBlock: {fileID: 2777720406066224087, guid: 73f8dae40f7680c4280bbe6fa5a8ffa7,
+    type: 3}
+  grassBlock: {fileID: 7246785239317824827, guid: 63b9c007c243e654caa61efa369e2023,
+    type: 3}
+  stoneBlock: {fileID: 5525891483026002785, guid: 72754f8c9691dca45a633fa35efed055,
+    type: 3}
+  waterBlock: {fileID: 8417291317008989012, guid: 2d059a46c70a87c46992996d171ab187,
+    type: 3}
+  player: {fileID: 1828424806}
+--- !u!4 &1913596012
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913596010}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 19.981949, y: -18.149652, z: -5.249599}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -705,3 +769,4 @@ SceneRoots:
   - {fileID: 918040100}
   - {fileID: 1437718143}
   - {fileID: 1254160754}
+  - {fileID: 1913596012}
