@@ -88,7 +88,6 @@ namespace PerlinNoiseGenerator
 
             return noiseMap;
         }
-
     }
 
     [System.Serializable]

@@ -161,7 +161,7 @@ public class CaveMeshGenerator : MonoBehaviour
 
     }
 
-    struct Triangle
+     public struct Triangle
     {
         public int vertexIndexA;
         public int vertexIndexB;
@@ -254,7 +254,7 @@ public class CaveMeshGenerator : MonoBehaviour
         return count == 1;
     }
 
-    void TriangulateSquare(Square square)
+    public void TriangulateSquare(Square square)
     {
         switch (square.configuration)
         {

@@ -113,6 +113,7 @@ namespace PerlinNoiseGenerator
 
                 if (i % blocksGeneratedByFrame == 0) // A cada X blocos gerados, espera um frame
                 {
+                    FindFirstObjectByType<PrefabGenerator>().GeneratePrefabs(noiseMap[x, z], x, z);
                     yield return null;
                 }
             }
