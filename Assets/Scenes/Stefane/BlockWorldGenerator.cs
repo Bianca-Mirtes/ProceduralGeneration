@@ -21,11 +21,10 @@ namespace PerlinNoiseGenerator
 
         private Dictionary<Vector2Int, GameObject> activeChunks = new Dictionary<Vector2Int, GameObject>();
         private Vector2Int currentChunk;     // Chunk em que o player esta
-        private Vector3 originalGravity;
+        private bool isTerrain = false;
 
         void Start()
         {
-            originalGravity = Physics.gravity;
             UpdateVisibleChunks();
         }
 
@@ -113,13 +112,13 @@ namespace PerlinNoiseGenerator
 
                 if (i % blocksGeneratedByFrame == 0) // A cada X blocos gerados, espera um frame
                 {
-                    FindFirstObjectByType<PrefabGenerator>().GeneratePrefabs(noiseMap[x, z], x, z);
+                    //FindFirstObjectByType<PrefabGenerator>().GeneratePrefabs(noiseMap[x, z], x, z);
                     yield return null;
                 }
             }
 
             activeChunks.Add(chunkCoord, chunkParent);
-            //CombineChildrenAndAddCollider(chunkParent);
+            isTerrain = true;
         }
 
         void GenerateVerticalBlocks(Transform parent, int worldX, int worldZ, int terrainHeight, int seaLevel)
@@ -151,35 +150,10 @@ namespace PerlinNoiseGenerator
             }
         }
 
-        void CombineChildrenAndAddCollider(GameObject parent)
+        public bool isTerrainGenerated()
         {
-            // Agrupar todos os filhos
-            foreach (Transform child in parent.transform)
-            {
-                child.SetParent(null);  // Desvincula o filho do parent
-            }
-
-            // Adiciona um colisor ao GameObject pai
-            BoxCollider collider = parent.AddComponent<BoxCollider>(); // Pode ser BoxCollider, SphereCollider, etc.
-
-            // Calcula os bounds do objeto pai baseado nos filhos
-            Bounds bounds = new Bounds(parent.transform.position, Vector3.zero);
-
-            // Calcula a área de cobertura combinando as posições de todos os filhos
-            foreach (Transform child in parent.transform)
-            {
-                bounds.Encapsulate(child.GetComponent<Renderer>().bounds);
-            }
-
-            // Ajusta o tamanho e a posição do colisor com base nos bounds calculados
-            collider.center = bounds.center - parent.transform.position;
-            collider.size = bounds.size;
-
-            // Reativa o parent para os filhos ficarem dentro dele
-            foreach (Transform child in parent.transform)
-            {
-                child.SetParent(parent.transform);  // Reconecta os filhos ao GameObject pai
-            }
+            print("Terrain under player: "+isTerrain);
+            return isTerrain;
         }
     }
 }

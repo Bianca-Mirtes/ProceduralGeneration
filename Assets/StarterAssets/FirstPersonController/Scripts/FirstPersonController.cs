@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 #endif
 using System.Collections.Generic;
 using System.Collections;
+using PerlinNoiseGenerator;
 
 namespace StarterAssets
 {
@@ -53,6 +54,8 @@ namespace StarterAssets
 		public float TopClamp = 90.0f;
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
+
+		public DynamicBlockWorldGenerator blockGenerator;
 
 		// cinemachine
 		private float _cinemachineTargetPitch;
@@ -114,7 +117,6 @@ namespace StarterAssets
 
 			defaultGravity = Gravity;
 			Gravity = 0;
-			Invoke("turnOnGravity", 3f);
 		}
 
 		private void Update()
@@ -122,6 +124,11 @@ namespace StarterAssets
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
+			if(Gravity == 0 && blockGenerator.isTerrainGenerated())
+            {
+				transform.position = new Vector3(transform.position.x, 5f, transform.position.z);
+				Gravity = defaultGravity;
+			}
 		}
 
 		private void LateUpdate()
@@ -270,12 +277,6 @@ namespace StarterAssets
 
 			// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 			Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
-		}
-
-		private void turnOnGravity()
-		{
-			transform.position = new Vector3(transform.position.x, 6f, transform.position.z);
-			Gravity = defaultGravity;
 		}
 	}
 }
