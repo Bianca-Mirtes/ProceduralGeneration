@@ -1,36 +1,46 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+using System.Collections;
 
 namespace PerlinNoiseGenerator
 {
     public class DynamicBlockWorldGenerator : MonoBehaviour
     {
-        public NoiseSettings noiseSettings;  // Configurações de ruído
-        public Vector2 sampleCentre;         // Centro inicial do noise
-        public int chunkSize = 8;            // Tamanho do chunk (8x8 blocos visíveis)
-        public int maxTerrainHeight = 20;    // Altura máxima do terreno
+        [SerializeField] private NoiseSettings noiseSettings;  // Configuracoes de ruido
+        [SerializeField] private Vector2 sampleCentre;         // Centro inicial do noise
+        [SerializeField] private int chunkSize = 8;            // Tamanho do chunk (8x8 blocos visiveis)
+        [SerializeField] private int maxTerrainHeight = 20;    // Altura maxima do terreno
 
-        public GameObject dirtBlock;         // Prefab do bloco de terra
-        public GameObject grassBlock;        // Prefab do bloco de grama
-        public GameObject stoneBlock;        // Prefab do bloco de pedra
-        public GameObject waterBlock;
+        [SerializeField] private GameObject dirtBlock;         // Prefab do bloco de terra
+        [SerializeField] private GameObject grassBlock;        // Prefab do bloco de grama
+        [SerializeField] private GameObject stoneBlock;        // Prefab do bloco de pedra
+        [SerializeField] private GameObject waterBlock;
 
-        public Transform player;             // Referência ao jogador
+        [SerializeField] private Transform player;             // Referencia ao jogador
+        [SerializeField] private int blocksGeneratedByFrame;   // Qtdd de blocos gerados a cada frame para evitar gargalos
 
         private Dictionary<Vector2Int, GameObject> activeChunks = new Dictionary<Vector2Int, GameObject>();
-        private Vector2Int currentChunk;     // Chunk em que o player está
+        private Vector2Int currentChunk;     // Chunk em que o player esta
 
         void Start()
         {
+            //StartCoroutine(setAmountOfBlocksByFrame(blocksGeneratedByFrame));
             UpdateVisibleChunks();
+        }
+
+        IEnumerator setAmountOfBlocksByFrame(int blocksGeneratedByFrame)
+        {
+            int amountOfBlocks = blocksGeneratedByFrame;
+            blocksGeneratedByFrame = 0;
+
+            yield return new WaitForSeconds(2);
+            blocksGeneratedByFrame = amountOfBlocks;
         }
 
         void Update()
         {
- 
             Vector2Int newChunk = GetPlayerChunk();
-            Debug.Log(newChunk.x+" - "+newChunk.y);
+            Debug.Log(newChunk.x + " - " + newChunk.y);
             // Apenas atualiza os chunks se o jogador mudou de chunk
             if (newChunk != currentChunk)
             {
@@ -39,10 +49,9 @@ namespace PerlinNoiseGenerator
             }
         }
 
-
         Vector2Int GetPlayerChunk()
         {
-            // Calcula o chunk em que o jogador está com base na posição
+            // Calcula o chunk em que o jogador esta com base na posicao
             int chunkX = Mathf.FloorToInt(player.position.x / chunkSize);
             int chunkZ = Mathf.FloorToInt(player.position.z / chunkSize);
             return new Vector2Int(chunkX, chunkZ);
@@ -50,7 +59,7 @@ namespace PerlinNoiseGenerator
 
         void UpdateVisibleChunks()
         {
-            // Calcula os chunks visíveis ao redor do player
+            // Calcula os chunks visiveis ao redor do player
             HashSet<Vector2Int> newVisibleChunks = new HashSet<Vector2Int>();
 
             for (int xOffset = -1; xOffset <= 1; xOffset++)
@@ -62,18 +71,20 @@ namespace PerlinNoiseGenerator
 
                     if (!activeChunks.ContainsKey(chunkCoord))
                     {
-                        GenerateChunk(chunkCoord);
+                        StartCoroutine(GenerateChunks(chunkCoord));
+                        //GenerateChunk(chunkCoord);
                     }
                 }
             }
 
-            // Desativa chunks que não estão mais visíveis
+            // Desativa chunks que nao estao mais visiveis
             List<Vector2Int> chunksToRemove = new List<Vector2Int>();
             foreach (var chunk in activeChunks.Keys)
             {
                 if (!newVisibleChunks.Contains(chunk))
                 {
-                    activeChunks[chunk].SetActive(false);
+                    //activeChunks[chunk].SetActive(false);
+                    Destroy(activeChunks[chunk]);
                     chunksToRemove.Add(chunk);
                 }
             }
@@ -84,65 +95,98 @@ namespace PerlinNoiseGenerator
             }
         }
 
-        
-
-
-        void GenerateChunk(Vector2Int chunkCoord)
+        IEnumerator GenerateChunks(Vector2Int chunkCoord)
         {
             GameObject chunkParent = new GameObject($"Chunk_{chunkCoord.x}_{chunkCoord.y}");
             chunkParent.transform.parent = transform;
 
             Vector2Int chunkOrigin = chunkCoord * chunkSize;
-
-            // Define o nível do mar
-            int seaLevel = 5;
-
-            // Gera o mapa de ruído para o chunk
+            int seaLevel = 2;
             float[,] noiseMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseSettings, sampleCentre + chunkOrigin);
 
-            for (int z = 0; z < chunkSize; z++)
+            // Processa todos os blocos, mas em etapas
+            for (int i = 0; i < chunkSize * chunkSize; i++)
             {
-                for (int x = 0; x < chunkSize; x++)
+                int x = i % chunkSize;
+                int z = i / chunkSize;
+
+                // Calcula a posicao global do bloco
+                int worldX = chunkOrigin.x + x;
+                int worldZ = chunkOrigin.y + z;
+
+                float height = noiseMap[x, z] * maxTerrainHeight;
+                int terrainHeight = Mathf.FloorToInt(height);
+
+                GenerateVerticalBlocks(chunkParent.transform, worldX, worldZ, terrainHeight, seaLevel);
+
+                if (i % blocksGeneratedByFrame == 0) // A cada X blocos gerados, espera um frame
                 {
-                    // Calcula a posição global do bloco
-                    int worldX = chunkOrigin.x + x;
-                    int worldZ = chunkOrigin.y + z;
-
-                    float height = noiseMap[x, z] * maxTerrainHeight;
-                    int terrainHeight = Mathf.FloorToInt(height);
-
-                    // Instancia os blocos do terreno
-                    for (int y = 0; y <= Mathf.Max(terrainHeight, seaLevel); y++)
-                    {
-                        GameObject blockToSpawn;
-
-                        // Define o tipo de bloco
-                        if (y > terrainHeight && y <= seaLevel)
-                        {
-                            blockToSpawn = waterBlock; // Bloco de água
-                        }
-                        else if (y == terrainHeight)
-                        {
-                            blockToSpawn = grassBlock;
-                        }
-                        else if (y > terrainHeight - 3)
-                        {
-                            blockToSpawn = dirtBlock;
-                        }
-                        else
-                        {
-                            blockToSpawn = stoneBlock;
-                        }
-
-                        Vector3 blockPosition = new Vector3(worldX, y, worldZ);
-                        Instantiate(blockToSpawn, blockPosition, Quaternion.identity, chunkParent.transform);
-                    }
+                    yield return null;
                 }
             }
 
             activeChunks.Add(chunkCoord, chunkParent);
+            //CombineChildrenAndAddCollider(chunkParent);
         }
 
+        void GenerateVerticalBlocks(Transform parent, int worldX, int worldZ, int terrainHeight, int seaLevel)
+        {
+            for (int y = 0; y <= Mathf.Max(terrainHeight, seaLevel); y++)
+            {
+                GameObject blockToSpawn;
+
+                // Define o tipo de bloco
+                if (y > terrainHeight && y <= seaLevel)
+                {
+                    blockToSpawn = waterBlock; // Bloco de agua
+                }
+                else if (y == terrainHeight)
+                {
+                    blockToSpawn = grassBlock;
+                }
+                else if (y > terrainHeight - 3)
+                {
+                    blockToSpawn = dirtBlock;
+                }
+                else
+                {
+                    blockToSpawn = stoneBlock;
+                }
+
+                Vector3 blockPosition = new Vector3(worldX, y, worldZ);
+                Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
+            }
+        }
+
+        void CombineChildrenAndAddCollider(GameObject parent)
+        {
+            // Agrupar todos os filhos
+            foreach (Transform child in parent.transform)
+            {
+                child.SetParent(null);  // Desvincula o filho do parent
+            }
+
+            // Adiciona um colisor ao GameObject pai
+            BoxCollider collider = parent.AddComponent<BoxCollider>(); // Pode ser BoxCollider, SphereCollider, etc.
+
+            // Calcula os bounds do objeto pai baseado nos filhos
+            Bounds bounds = new Bounds(parent.transform.position, Vector3.zero);
+
+            // Calcula a área de cobertura combinando as posições de todos os filhos
+            foreach (Transform child in parent.transform)
+            {
+                bounds.Encapsulate(child.GetComponent<Renderer>().bounds);
+            }
+
+            // Ajusta o tamanho e a posição do colisor com base nos bounds calculados
+            collider.center = bounds.center - parent.transform.position;
+            collider.size = bounds.size;
+
+            // Reativa o parent para os filhos ficarem dentro dele
+            foreach (Transform child in parent.transform)
+            {
+                child.SetParent(parent.transform);  // Reconecta os filhos ao GameObject pai
+            }
+        }
     }
 }
-
