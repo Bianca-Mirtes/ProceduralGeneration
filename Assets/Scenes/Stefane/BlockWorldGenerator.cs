@@ -21,26 +21,18 @@ namespace PerlinNoiseGenerator
 
         private Dictionary<Vector2Int, GameObject> activeChunks = new Dictionary<Vector2Int, GameObject>();
         private Vector2Int currentChunk;     // Chunk em que o player esta
+        private Vector3 originalGravity;
 
         void Start()
         {
-            //StartCoroutine(setAmountOfBlocksByFrame(blocksGeneratedByFrame));
+            originalGravity = Physics.gravity;
             UpdateVisibleChunks();
-        }
-
-        IEnumerator setAmountOfBlocksByFrame(int blocksGeneratedByFrame)
-        {
-            int amountOfBlocks = blocksGeneratedByFrame;
-            blocksGeneratedByFrame = 0;
-
-            yield return new WaitForSeconds(2);
-            blocksGeneratedByFrame = amountOfBlocks;
         }
 
         void Update()
         {
             Vector2Int newChunk = GetPlayerChunk();
-            Debug.Log(newChunk.x + " - " + newChunk.y);
+            Debug.Log("[" + newChunk.x + ", " + newChunk.y + "]");
             // Apenas atualiza os chunks se o jogador mudou de chunk
             if (newChunk != currentChunk)
             {
@@ -64,7 +56,7 @@ namespace PerlinNoiseGenerator
 
             for (int xOffset = -1; xOffset <= 1; xOffset++)
             {
-                for (int zOffset = -1; zOffset <= 1; zOffset++)
+                for (int zOffset = 0; zOffset <= 2; zOffset++)
                 {
                     Vector2Int chunkCoord = currentChunk + new Vector2Int(xOffset, zOffset);
                     newVisibleChunks.Add(chunkCoord);
@@ -95,16 +87,16 @@ namespace PerlinNoiseGenerator
             }
         }
 
-        IEnumerator GenerateChunks(Vector2Int chunkCoord)
+        IEnumerator GenerateChunks(Vector2Int chunkCoord) //[2, 2]
         {
             GameObject chunkParent = new GameObject($"Chunk_{chunkCoord.x}_{chunkCoord.y}");
             chunkParent.transform.parent = transform;
 
             Vector2Int chunkOrigin = chunkCoord * chunkSize;
-            int seaLevel = 2;
-            float[,] noiseMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseSettings, sampleCentre + chunkOrigin);
+            int seaLevel = 1;
+            float[,] noiseMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseSettings, chunkOrigin);
+            //float[,] noiseMap = new float[3, 3];
 
-            // Processa todos os blocos, mas em etapas
             for (int i = 0; i < chunkSize * chunkSize; i++)
             {
                 int x = i % chunkSize;
@@ -112,7 +104,7 @@ namespace PerlinNoiseGenerator
 
                 // Calcula a posicao global do bloco
                 int worldX = chunkOrigin.x + x;
-                int worldZ = chunkOrigin.y + z;
+                int worldZ = chunkOrigin.y - z;
 
                 float height = noiseMap[x, z] * maxTerrainHeight;
                 int terrainHeight = Mathf.FloorToInt(height);

@@ -2,6 +2,8 @@
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
+using System.Collections.Generic;
+using System.Collections;
 
 namespace StarterAssets
 {
@@ -26,6 +28,7 @@ namespace StarterAssets
 		public float JumpHeight = 1.2f;
 		[Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
 		public float Gravity = -15.0f;
+		private float defaultGravity;
 
 		[Space(10)]
 		[Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
@@ -108,6 +111,10 @@ namespace StarterAssets
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
+
+			defaultGravity = Gravity;
+			Gravity = 0;
+			Invoke("turnOnGravity", 3f);
 		}
 
 		private void Update()
@@ -263,6 +270,12 @@ namespace StarterAssets
 
 			// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 			Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
+		}
+
+		private void turnOnGravity()
+		{
+			transform.position = new Vector3(transform.position.x, 6f, transform.position.z);
+			Gravity = defaultGravity;
 		}
 	}
 }
