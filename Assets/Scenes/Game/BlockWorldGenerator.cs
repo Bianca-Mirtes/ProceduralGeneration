@@ -8,6 +8,7 @@ namespace PerlinNoiseGenerator
     {
         [SerializeField] private NoiseSettings noiseSettings;  // Configuracoes de ruido
         [SerializeField] private NoiseSettings noiseTree;      // Configuracoes de ruido das arve
+        [SerializeField] private NoiseSettings noiseCave;      // Configuracoes de ruido das cavernas
         [SerializeField] private Vector2 sampleCentre;         // Centro inicial do noise
         [SerializeField] private int chunkSize = 8;            // Tamanho do chunk (8x8 blocos visiveis)
         [SerializeField] private int maxTerrainHeight = 20;    // Altura maxima do terreno
@@ -18,7 +19,8 @@ namespace PerlinNoiseGenerator
         [SerializeField] private GameObject waterBlock;
         [SerializeField] private GameObject tree;
         [SerializeField] private float treeThreshold = .7f;
-        private Vector2 lastTree = Vector2.zero;
+        [SerializeField] private GameObject cave;
+        [SerializeField] private float caveThreshold = .7f;
 
         [SerializeField] private Transform player;             // Referencia ao jogador
         [SerializeField] private int blocksGeneratedByFrame;   // Qtdd de blocos gerados a cada frame para evitar gargalos
@@ -99,6 +101,7 @@ namespace PerlinNoiseGenerator
             int seaLevel = 1;
             float[,] noiseMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseSettings, chunkOrigin);
             float[,] noiseTreeMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseTree, chunkOrigin);
+            float[,] noiseCaveMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseCave, chunkOrigin);
 
             System.Random rand = new System.Random(chunkCoord.GetHashCode());
 
@@ -115,21 +118,13 @@ namespace PerlinNoiseGenerator
                 float height = noiseMap[x, z] * maxTerrainHeight;
                 int terrainHeight = Mathf.FloorToInt(height);
 
-
                 //tree
                 float treeChance = Mathf.Round(noiseTreeMap[x, z] * noiseMap[x, z] * 10f) / 10f;
 
-                print(treeChance);
+                //cave
+                float caveChance = Mathf.Round(noiseCaveMap[x, z] * (1-noiseMap[x, z]) * 10f) / 10f;
 
-                GenerateVerticalBlocks(chunkParent.transform, worldX, worldZ, terrainHeight, seaLevel, treeChance);
-
-                //tree
-                //int treeChance = Mathf.FloorToInt(noiseTreeMap[x,z] * 100);
-                //print(treeChance);
-                //if (treeChance >= 120)
-                //{
-                //    GenerateTrees(chunkParent.transform, worldX, worldZ, terrainHeight, seaLevel, treeChance);
-                //}
+                GenerateVerticalBlocks(chunkParent.transform, worldX, worldZ, terrainHeight, seaLevel, treeChance, caveChance);
 
                 if (i % blocksGeneratedByFrame == 0) // A cada X blocos gerados, espera um frame
                 {
@@ -141,7 +136,7 @@ namespace PerlinNoiseGenerator
             isTerrain = true;
         }
 
-        void GenerateVerticalBlocks(Transform parent, int worldX, int worldZ, int terrainHeight, int seaLevel, float treeChance)
+        void GenerateVerticalBlocks(Transform parent, int worldX, int worldZ, int terrainHeight, int seaLevel, float treeChance, float caveChance)
         {
             for (int y = 0; y <= Mathf.Max(terrainHeight, seaLevel); y++)
             {
@@ -172,6 +167,12 @@ namespace PerlinNoiseGenerator
                 {
                     Vector3 treePosition = new Vector3(worldX, terrainHeight, worldZ);
                     Instantiate(tree, treePosition, Quaternion.identity, parent);
+                }
+
+                if (caveChance >= caveThreshold && (worldX % 25 == 0 && worldZ % 25 == 0) && terrainHeight >1)
+                {
+                    Vector3 cavePosition = new Vector3(worldX, terrainHeight, worldZ);
+                    Instantiate(cave, cavePosition, Quaternion.identity, parent);
                 }
             }
         }
