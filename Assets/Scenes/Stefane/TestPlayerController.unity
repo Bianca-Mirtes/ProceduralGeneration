@@ -866,7 +866,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1437718140
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1108,8 +1108,16 @@ MonoBehaviour:
     lacunarity: 1.5
     seed: 0
     offset: {x: 0, y: 0}
+  noiseTree:
+    normalizeMode: 1
+    scale: 100
+    octaves: 2
+    persistance: 0.3
+    lacunarity: 1.5
+    seed: 0
+    offset: {x: 0, y: 0}
   sampleCentre: {x: 0, y: 0}
-  chunkSize: 39
+  chunkSize: 9
   maxTerrainHeight: 15
   dirtBlock: {fileID: 2777720406066224087, guid: 73f8dae40f7680c4280bbe6fa5a8ffa7,
     type: 3}
@@ -1119,8 +1127,10 @@ MonoBehaviour:
     type: 3}
   waterBlock: {fileID: 8417291317008989012, guid: 2d059a46c70a87c46992996d171ab187,
     type: 3}
+  tree: {fileID: 854109937957132131, guid: b328500546533384a8624a3be3549c67, type: 3}
+  treeThreshold: 0.3
   player: {fileID: 1828424806}
-  blocksGeneratedByFrame: 100
+  blocksGeneratedByFrame: 60
 --- !u!4 &1913596012
 Transform:
   m_ObjectHideFlags: 0

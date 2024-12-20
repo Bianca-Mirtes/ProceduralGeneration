@@ -7,6 +7,7 @@ namespace PerlinNoiseGenerator
     public class DynamicBlockWorldGenerator : MonoBehaviour
     {
         [SerializeField] private NoiseSettings noiseSettings;  // Configuracoes de ruido
+        [SerializeField] private NoiseSettings noiseTree;      // Configuracoes de ruido das arve
         [SerializeField] private Vector2 sampleCentre;         // Centro inicial do noise
         [SerializeField] private int chunkSize = 8;            // Tamanho do chunk (8x8 blocos visiveis)
         [SerializeField] private int maxTerrainHeight = 20;    // Altura maxima do terreno
@@ -15,6 +16,9 @@ namespace PerlinNoiseGenerator
         [SerializeField] private GameObject grassBlock;        // Prefab do bloco de grama
         [SerializeField] private GameObject stoneBlock;        // Prefab do bloco de pedra
         [SerializeField] private GameObject waterBlock;
+        [SerializeField] private GameObject tree;
+        [SerializeField] private float treeThreshold = .7f;
+        private Vector2 lastTree = Vector2.zero;
 
         [SerializeField] private Transform player;             // Referencia ao jogador
         [SerializeField] private int blocksGeneratedByFrame;   // Qtdd de blocos gerados a cada frame para evitar gargalos
@@ -94,7 +98,9 @@ namespace PerlinNoiseGenerator
             Vector2Int chunkOrigin = chunkCoord * chunkSize;
             int seaLevel = 1;
             float[,] noiseMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseSettings, chunkOrigin);
-            //float[,] noiseMap = new float[3, 3];
+            float[,] noiseTreeMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseTree, chunkOrigin);
+
+            System.Random rand = new System.Random(chunkCoord.GetHashCode());
 
             for (int i = 0; i < chunkSize * chunkSize; i++)
             {
@@ -105,14 +111,28 @@ namespace PerlinNoiseGenerator
                 int worldX = chunkOrigin.x + x;
                 int worldZ = chunkOrigin.y - z;
 
+                //terrain
                 float height = noiseMap[x, z] * maxTerrainHeight;
                 int terrainHeight = Mathf.FloorToInt(height);
 
-                GenerateVerticalBlocks(chunkParent.transform, worldX, worldZ, terrainHeight, seaLevel);
+
+                //tree
+                float treeChance = Mathf.Round(noiseTreeMap[x, z] * noiseMap[x, z] * 10f) / 10f;
+
+                print(treeChance);
+
+                GenerateVerticalBlocks(chunkParent.transform, worldX, worldZ, terrainHeight, seaLevel, treeChance);
+
+                //tree
+                //int treeChance = Mathf.FloorToInt(noiseTreeMap[x,z] * 100);
+                //print(treeChance);
+                //if (treeChance >= 120)
+                //{
+                //    GenerateTrees(chunkParent.transform, worldX, worldZ, terrainHeight, seaLevel, treeChance);
+                //}
 
                 if (i % blocksGeneratedByFrame == 0) // A cada X blocos gerados, espera um frame
                 {
-                    //FindFirstObjectByType<PrefabGenerator>().GeneratePrefabs(noiseMap[x, z], x, z);
                     yield return null;
                 }
             }
@@ -121,7 +141,7 @@ namespace PerlinNoiseGenerator
             isTerrain = true;
         }
 
-        void GenerateVerticalBlocks(Transform parent, int worldX, int worldZ, int terrainHeight, int seaLevel)
+        void GenerateVerticalBlocks(Transform parent, int worldX, int worldZ, int terrainHeight, int seaLevel, float treeChance)
         {
             for (int y = 0; y <= Mathf.Max(terrainHeight, seaLevel); y++)
             {
@@ -147,10 +167,22 @@ namespace PerlinNoiseGenerator
 
                 Vector3 blockPosition = new Vector3(worldX, y, worldZ);
                 Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
+
+                if(treeChance >= treeThreshold && worldX%3 == 0 && worldZ%3 == 0)
+                {
+                    Vector3 treePosition = new Vector3(worldX, terrainHeight, worldZ);
+                    Instantiate(tree, treePosition, Quaternion.identity, parent);
+                }
             }
         }
 
-        public bool isTerrainGenerated()
+        void GenerateTrees(Transform parent, int worldX, int worldZ, int terrainHeight, int seaLevel, float treeChance)
+        {
+            Vector3 blockPosition = new Vector3(worldX, terrainHeight, worldZ);
+            Instantiate(tree, blockPosition, Quaternion.identity, parent);
+        }
+
+        public bool isTerrainGenerated() //checa se existe terreno abaixo do player
         {
             print("Terrain under player: "+isTerrain);
             return isTerrain;
