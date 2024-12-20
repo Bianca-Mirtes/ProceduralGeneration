@@ -168,7 +168,7 @@ namespace PerlinNoiseGenerator
                 Vector3 blockPosition = new Vector3(worldX, y, worldZ);
                 Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
 
-                if(treeChance >= treeThreshold && worldX%3 == 0 && worldZ%3 == 0)
+                if(treeChance >= treeThreshold && (worldX%5 == 0 || worldX%11 == 0) && (worldZ%5 == 0 || worldZ%11 == 0))
                 {
                     Vector3 treePosition = new Vector3(worldX, terrainHeight, worldZ);
                     Instantiate(tree, treePosition, Quaternion.identity, parent);
