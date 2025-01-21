@@ -12,11 +12,13 @@ namespace PerlinNoiseGenerator
         [SerializeField] private Vector2 sampleCentre;         // Centro inicial do noise
         [SerializeField] private int chunkSize = 8;            // Tamanho do chunk (8x8 blocos visiveis)
         [SerializeField] private int maxTerrainHeight = 20;    // Altura maxima do terreno
+        [SerializeField] private int seaLevel = 5;
 
         [SerializeField] private GameObject dirtBlock;         // Prefab do bloco de terra
         [SerializeField] private GameObject grassBlock;        // Prefab do bloco de grama
         [SerializeField] private GameObject stoneBlock;        // Prefab do bloco de pedra
         [SerializeField] private GameObject waterBlock;
+        [SerializeField] private GameObject sandBlock;
         [SerializeField] private GameObject tree;
         [SerializeField] private float treeThreshold = .7f;
         [SerializeField] private GameObject cave;
@@ -98,7 +100,6 @@ namespace PerlinNoiseGenerator
             chunkParent.transform.parent = transform;
 
             Vector2Int chunkOrigin = chunkCoord * chunkSize;
-            int seaLevel = 1;
             float[,] noiseMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseSettings, chunkOrigin);
             float[,] noiseTreeMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseTree, chunkOrigin);
             float[,] noiseCaveMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseCave, chunkOrigin);
@@ -143,13 +144,16 @@ namespace PerlinNoiseGenerator
                 GameObject blockToSpawn;
 
                 // Define o tipo de bloco
-                if (y > terrainHeight && y <= seaLevel)
+                if(y > terrainHeight && y <= seaLevel)
                 {
                     blockToSpawn = waterBlock; // Bloco de agua
                 }
                 else if (y == terrainHeight)
                 {
-                    blockToSpawn = grassBlock;
+                    if(y >= seaLevel)
+                        blockToSpawn = grassBlock;
+                    else
+                        blockToSpawn = sandBlock;
                 }
                 else if (y > terrainHeight - 3)
                 {
@@ -161,32 +165,35 @@ namespace PerlinNoiseGenerator
                 }
 
                 Vector3 blockPosition = new Vector3(worldX, y, worldZ);
-                Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
+                if(!(blockToSpawn == waterBlock && y < seaLevel)) //NAO RENDERIZA BLOCOS DE AGUA DENTRO DAGUA
+                    Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
 
-                if(treeChance >= treeThreshold && (worldX%5 == 0 || worldX%11 == 0) && (worldZ%5 == 0 || worldZ%11 == 0))
+                if (y > seaLevel)
                 {
-                    Vector3 treePosition = new Vector3(worldX, terrainHeight, worldZ);
-                    Instantiate(tree, treePosition, Quaternion.identity, parent);
-                }
+                    if (treeChance >= treeThreshold && (worldX % 5 == 0 || worldX % 11 == 0) && (worldZ % 5 == 0 || worldZ % 11 == 0))
+                    {
+                        Vector3 treePosition = new Vector3(worldX, terrainHeight, worldZ);
+                        Instantiate(tree, treePosition, Quaternion.identity, parent);
+                    }
 
-                if (caveChance >= caveThreshold && (worldX % 25 == 0 && worldZ % 25 == 0) && terrainHeight >1)
-                {
-                    Vector3 cavePosition = new Vector3(worldX, terrainHeight, worldZ);
-                    Instantiate(cave, cavePosition, Quaternion.identity, parent);
+                    if (caveChance >= caveThreshold && (worldX % 25 == 0 && worldZ % 25 == 0) && terrainHeight > 1)
+                    {
+                        Vector3 cavePosition = new Vector3(worldX, terrainHeight, worldZ);
+                        Instantiate(cave, cavePosition, Quaternion.identity, parent);
+                    }
                 }
             }
-        }
-
-        void GenerateTrees(Transform parent, int worldX, int worldZ, int terrainHeight, int seaLevel, float treeChance)
-        {
-            Vector3 blockPosition = new Vector3(worldX, terrainHeight, worldZ);
-            Instantiate(tree, blockPosition, Quaternion.identity, parent);
         }
 
         public bool isTerrainGenerated() //checa se existe terreno abaixo do player
         {
             print("Terrain under player: "+isTerrain);
             return isTerrain;
+        }
+
+        public bool isUnderWater()
+        {
+            return player.localPosition.y < -2;
         }
     }
 }

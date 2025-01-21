@@ -643,6 +643,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1812413710}
+    - targetCorrespondingSourceObject: {fileID: 9005220659476430823, guid: 2d3a85ecde41a8246a79669975912b74,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1812413718}
   m_SourcePrefab: {fileID: 100100000, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
 --- !u!1 &1006706872
 GameObject:
@@ -898,6 +902,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8616685848737228371, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
+      propertyPath: globalVolume
+      value: 
+      objectReference: {fileID: 1810707436}
+    - target: {fileID: 8616685848737228371, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
+        type: 3}
       propertyPath: blockGenerator
       value: 
       objectReference: {fileID: 1913596011}
@@ -905,6 +914,11 @@ PrefabInstance:
         type: 3}
       propertyPath: GroundLayers.m_Bits
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8616685848737228371, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
+        type: 3}
+      propertyPath: MoveSpeedUnderWater
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
@@ -1235,6 +1249,27 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 930883856}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1812413718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812413709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedProfile: {fileID: 11400000, guid: 9b621e9b4ffb9564695384ce594a3515, type: 2}
+  isGlobal: 0
+  blendDistance: 0
+  weight: 1
+  priority: 0
+  m_PreviousLayer: 0
+  m_PreviousPriority: 0
+  m_TempColliders: []
+  m_InternalProfile: {fileID: 0}
 --- !u!4 &1828424806 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
@@ -1363,15 +1398,16 @@ MonoBehaviour:
     offset: {x: 0, y: 0}
   noiseCave:
     normalizeMode: 1
-    scale: 30
-    octaves: 2
-    persistance: 0.6
+    scale: 50
+    octaves: 4
+    persistance: 0.5
     lacunarity: 1.5
-    seed: 9
+    seed: 20
     offset: {x: 0, y: 0}
   sampleCentre: {x: 0, y: 0}
   chunkSize: 29
   maxTerrainHeight: 15
+  seaLevel: 5
   dirtBlock: {fileID: 2777720406066224087, guid: 73f8dae40f7680c4280bbe6fa5a8ffa7,
     type: 3}
   grassBlock: {fileID: 7246785239317824827, guid: 63b9c007c243e654caa61efa369e2023,
@@ -1379,6 +1415,8 @@ MonoBehaviour:
   stoneBlock: {fileID: 5525891483026002785, guid: 72754f8c9691dca45a633fa35efed055,
     type: 3}
   waterBlock: {fileID: 8417291317008989012, guid: 2d059a46c70a87c46992996d171ab187,
+    type: 3}
+  sandBlock: {fileID: 5525891483026002785, guid: 186d068de5a9b0146ab5f31e35f11514,
     type: 3}
   tree: {fileID: 3625831089587879760, guid: e9c351b0a350d9b4eb6d9cf364b27841, type: 3}
   treeThreshold: 0.2

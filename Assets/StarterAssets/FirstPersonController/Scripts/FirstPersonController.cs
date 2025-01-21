@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Collections;
 using PerlinNoiseGenerator;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace StarterAssets
 {
@@ -17,8 +19,11 @@ namespace StarterAssets
 		[Header("Player")]
 		[Tooltip("Move speed of the character in m/s")]
 		public float MoveSpeed = 4.0f;
+		private float DefaultMoveSpeed;
+		[Tooltip("Move speed of the character in m/s")]
+		public float MoveSpeedUnderWater = 2.0f;
 		[Tooltip("Sprint speed of the character in m/s")]
-		public float SprintSpeed = 6.0f;
+		public float SprintSpeed = 6.5f;
 		[Tooltip("Rotation speed of the character")]
 		public float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
@@ -56,6 +61,9 @@ namespace StarterAssets
 		public float BottomClamp = -90.0f;
 
 		public DynamicBlockWorldGenerator blockGenerator;
+		public Volume globalVolume;
+		private WhiteBalance whiteBalance;
+		private bool whiteBalanceIsActive = false;
 
 		// cinemachine
 		private float _cinemachineTargetPitch;
@@ -99,6 +107,11 @@ namespace StarterAssets
 			{
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
+			DefaultMoveSpeed = MoveSpeed;
+			if (globalVolume.profile.TryGet(out whiteBalance))
+			{
+				whiteBalance.active = false;
+			}
 		}
 
 		private void Start()
@@ -128,6 +141,15 @@ namespace StarterAssets
             {
 				transform.position = new Vector3(transform.position.x, 5f, transform.position.z);
 				Gravity = defaultGravity;
+			}
+
+			if(!whiteBalanceIsActive && blockGenerator.isUnderWater() || whiteBalanceIsActive && !blockGenerator.isUnderWater())
+			{ 
+				if (whiteBalance != null)
+				{
+					whiteBalanceIsActive = !whiteBalanceIsActive;
+					whiteBalance.active = whiteBalanceIsActive;
+				}
 			}
 		}
 
@@ -167,8 +189,7 @@ namespace StarterAssets
 
 		private void Move()
 		{
-			// set target speed based on move speed, sprint speed and if sprint is pressed
-			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+			float targetSpeed = blockGenerator.isUnderWater() ? MoveSpeedUnderWater : _input.sprint ? SprintSpeed : MoveSpeed;
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
