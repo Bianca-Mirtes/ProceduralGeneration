@@ -107,10 +107,10 @@ namespace PerlinNoiseGenerator
 
         public void ValidateValues()
         {
-            scale = Mathf.Max(scale, 0.01f);
-            octaves = Mathf.Max(octaves, 1);
-            lacunarity = Mathf.Max(lacunarity, 1);
-            persistance = Mathf.Clamp01(persistance);
+            //scale = Mathf.Max(scale, 0.01f);
+            //octaves = Mathf.Max(octaves, 1);
+            //lacunarity = Mathf.Max(lacunarity, 1);
+            //persistance = Mathf.Clamp01(persistance);
         }
     }
 }

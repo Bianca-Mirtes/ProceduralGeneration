@@ -120,10 +120,10 @@ namespace PerlinNoiseGenerator
                 int terrainHeight = Mathf.FloorToInt(height);
 
                 //tree
-                float treeChance = Mathf.Round(noiseTreeMap[x, z] * noiseMap[x, z] * 10f) / 10f;
+                float treeChance = noiseTreeMap[x, z];
 
                 //cave
-                float caveChance = Mathf.Round(noiseCaveMap[x, z] * (1-noiseMap[x, z]) * 10f) / 10f;
+                float caveChance = noiseCaveMap[x, z];
 
                 GenerateVerticalBlocks(chunkParent.transform, worldX, worldZ, terrainHeight, seaLevel, treeChance, caveChance);
 
@@ -139,12 +139,36 @@ namespace PerlinNoiseGenerator
 
         void GenerateVerticalBlocks(Transform parent, int worldX, int worldZ, int terrainHeight, int seaLevel, float treeChance, float caveChance)
         {
+            bool renderBlock = true;
+            bool hasCave = false;
+
             for (int y = 0; y <= Mathf.Max(terrainHeight, seaLevel); y++)
             {
+                if (y > seaLevel)
+                {
+                    if (caveChance >= caveThreshold && terrainHeight == y)
+                    {
+                        Vector3 cavePosition = new Vector3(worldX, terrainHeight, worldZ);
+                        Instantiate(cave, cavePosition, Quaternion.identity, parent);
+                        hasCave = true;
+                    }
+                    else
+                        hasCave = false;
+
+                    if (!hasCave) { 
+                        if (treeChance >= treeThreshold && terrainHeight == y)
+                        {
+                            Vector3 treePosition = new Vector3(worldX, terrainHeight, worldZ);
+                            Instantiate(tree, treePosition, Quaternion.identity, parent);
+                        }
+                    }
+                }
+
                 GameObject blockToSpawn;
+                renderBlock = true;
 
                 // Define o tipo de bloco
-                if(y > terrainHeight && y <= seaLevel)
+                if (y > terrainHeight && y <= seaLevel)
                 {
                     blockToSpawn = waterBlock; // Bloco de agua
                 }
@@ -157,30 +181,19 @@ namespace PerlinNoiseGenerator
                 }
                 else if (y > terrainHeight - 3)
                 {
+                    renderBlock = false;
                     blockToSpawn = dirtBlock;
                 }
                 else
                 {
+                    renderBlock = false;
                     blockToSpawn = stoneBlock;
                 }
 
-                Vector3 blockPosition = new Vector3(worldX, y, worldZ);
-                if(!(blockToSpawn == waterBlock && y < seaLevel)) //NAO RENDERIZA BLOCOS DE AGUA DENTRO DAGUA
-                    Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
-
-                if (y > seaLevel)
-                {
-                    if (treeChance >= treeThreshold && (worldX % 5 == 0 || worldX % 11 == 0) && (worldZ % 5 == 0 || worldZ % 11 == 0))
-                    {
-                        Vector3 treePosition = new Vector3(worldX, terrainHeight, worldZ);
-                        Instantiate(tree, treePosition, Quaternion.identity, parent);
-                    }
-
-                    if (caveChance >= caveThreshold && (worldX % 25 == 0 && worldZ % 25 == 0) && terrainHeight > 1)
-                    {
-                        Vector3 cavePosition = new Vector3(worldX, terrainHeight, worldZ);
-                        Instantiate(cave, cavePosition, Quaternion.identity, parent);
-                    }
+                if (renderBlock) { 
+                    Vector3 blockPosition = new Vector3(worldX, y, worldZ);
+                    if(!(blockToSpawn == waterBlock && y < seaLevel)) //NAO RENDERIZA BLOCOS DE AGUA DENTRO DAGUA
+                        Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
                 }
             }
         }

@@ -257,7 +257,7 @@ PrefabInstance:
     - target: {fileID: 8762286023885395322, guid: 9c489a8547f4d9e4387da15a4ff82c81,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.3163586
+      value: 7.375
       objectReference: {fileID: 0}
     - target: {fileID: 8762286023885395322, guid: 9c489a8547f4d9e4387da15a4ff82c81,
         type: 3}
@@ -553,7 +553,7 @@ PrefabInstance:
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.3163586
+      value: 7.375
       objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74,
         type: 3}
@@ -943,7 +943,7 @@ PrefabInstance:
     - target: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.94135857
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
@@ -1261,15 +1261,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sharedProfile: {fileID: 11400000, guid: 9b621e9b4ffb9564695384ce594a3515, type: 2}
-  isGlobal: 0
-  blendDistance: 0
-  weight: 1
-  priority: 0
-  m_PreviousLayer: 0
-  m_PreviousPriority: 0
-  m_TempColliders: []
-  m_InternalProfile: {fileID: 0}
 --- !u!4 &1828424806 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
@@ -1383,29 +1374,29 @@ MonoBehaviour:
   noiseSettings:
     normalizeMode: 1
     scale: 50
-    octaves: 4
+    octaves: 6
     persistance: 0.6
-    lacunarity: 1.5
-    seed: 0
+    lacunarity: 1
+    seed: 1
     offset: {x: 0, y: 0}
   noiseTree:
     normalizeMode: 1
-    scale: 20
-    octaves: 2
+    scale: 1
+    octaves: 4
     persistance: 0.6
     lacunarity: 1.5
     seed: 0
     offset: {x: 0, y: 0}
   noiseCave:
     normalizeMode: 1
-    scale: 50
-    octaves: 4
+    scale: 1
+    octaves: 5
     persistance: 0.5
-    lacunarity: 1.5
-    seed: 20
+    lacunarity: 2
+    seed: 0
     offset: {x: 0, y: 0}
   sampleCentre: {x: 0, y: 0}
-  chunkSize: 29
+  chunkSize: 51
   maxTerrainHeight: 15
   seaLevel: 5
   dirtBlock: {fileID: 2777720406066224087, guid: 73f8dae40f7680c4280bbe6fa5a8ffa7,
@@ -1419,11 +1410,11 @@ MonoBehaviour:
   sandBlock: {fileID: 5525891483026002785, guid: 186d068de5a9b0146ab5f31e35f11514,
     type: 3}
   tree: {fileID: 3625831089587879760, guid: e9c351b0a350d9b4eb6d9cf364b27841, type: 3}
-  treeThreshold: 0.2
+  treeThreshold: 0.75
   cave: {fileID: 3271129465080921083, guid: 2ee9b7008f5936243927fb8ef49ffd2d, type: 3}
-  caveThreshold: 0.2
+  caveThreshold: 0.88
   player: {fileID: 1828424806}
-  blocksGeneratedByFrame: 50
+  blocksGeneratedByFrame: 100
 --- !u!4 &1913596012
 Transform:
   m_ObjectHideFlags: 0
