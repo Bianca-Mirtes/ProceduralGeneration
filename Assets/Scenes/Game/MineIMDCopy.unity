@@ -1468,6 +1468,14 @@ MonoBehaviour:
     lacunarity: 1
     seed: 0
     offset: {x: 0, y: 0}
+  noiseOres:
+    normalizeMode: 0
+    scale: 50
+    octaves: 6
+    persistance: 0.6
+    lacunarity: 2
+    seed: 0
+    offset: {x: 0, y: 0}
   noiseCloud:
     normalizeMode: 0
     scale: 14

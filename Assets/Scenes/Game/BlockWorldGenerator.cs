@@ -61,6 +61,14 @@ namespace PerlinNoiseGenerator
                 currentChunk = newChunk;
                 UpdateVisibleChunks();
             }
+
+            if (closeToCave) 
+            {
+                GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform);
+
+                if (i % (blocksGeneratedByFrame) == 0) // A cada X blocos gerados, espera um frame
+                    yield return null;
+            }
         }
 
         Vector2Int GetPlayerChunk()
@@ -142,7 +150,7 @@ namespace PerlinNoiseGenerator
                 //caveEntries
                 float caveChance = noiseCaveEntriesMap[x, z];
 
-                if (isInsideCave() || isCloseToCave())
+                if (inCave)
                 {
                     GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform);
 
@@ -243,19 +251,9 @@ namespace PerlinNoiseGenerator
 
         public bool isUnderWater()
         {
-            return player.localPosition.y < -2 && !isInsideCave();
+            return player.localPosition.y < -2 && !inCave;
         }
-
-        public bool isInsideCave()
-        {
-            return inCave;
-        }
-
-        public bool isCloseToCave()
-        {
-            return closeToCave;
-        }
-
+        
         public void SetIsCloseToCave(bool closeToCave)
         {
             this.closeToCave = closeToCave;
