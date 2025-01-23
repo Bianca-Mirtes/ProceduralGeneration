@@ -20,13 +20,13 @@ RenderSettings:
   m_FogDensity: 0.0125
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.48567107, g: 0.70267546, b: 0.9622642, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SubtractiveShadowColor: {r: 0.7216981, g: 0.83531046, b: 1, a: 1}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -674,7 +674,7 @@ Transform:
   m_GameObject: {fileID: 1006706872}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalPosition: {x: 0, y: 1.09, z: 1.66}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -715,8 +715,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
-  m_Range: 10
+  m_Intensity: 2
+  m_Range: 1020
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -1396,14 +1396,22 @@ MonoBehaviour:
     offset: {x: 0, y: 0}
   noiseCave:
     normalizeMode: 1
-    scale: 40
-    octaves: 4
-    persistance: 0.5
+    scale: 50
+    octaves: 2
+    persistance: 0.6
     lacunarity: 1
     seed: 0
     offset: {x: 0, y: 0}
+  noiseOres:
+    normalizeMode: 1
+    scale: 2
+    octaves: 4
+    persistance: 0.6
+    lacunarity: 2
+    seed: 0
+    offset: {x: 0, y: 0}
   noiseCloud:
-    normalizeMode: 0
+    normalizeMode: 1
     scale: 14
     octaves: 2
     persistance: 0.6
@@ -1414,7 +1422,7 @@ MonoBehaviour:
   chunkSize: 33
   maxTerrainHeight: 15
   seaLevel: 5
-  maxCaveHeight: 11
+  maxCaveHeight: 7
   dirtBlock: {fileID: 2777720406066224087, guid: 73f8dae40f7680c4280bbe6fa5a8ffa7,
     type: 3}
   grassBlock: {fileID: 7246785239317824827, guid: 63b9c007c243e654caa61efa369e2023,

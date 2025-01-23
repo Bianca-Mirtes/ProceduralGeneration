@@ -11,6 +11,7 @@ namespace PerlinNoiseGenerator
         [SerializeField] private NoiseSettings noiseTree;      // Configuracoes de ruido das arve
         [SerializeField] private NoiseSettings noiseCaveEntries;      // Configuracoes de ruido das cavernas
         [SerializeField] private NoiseSettings noiseCave;
+        [SerializeField] private NoiseSettings noiseOres;
         [SerializeField] private NoiseSettings noiseCloud;
 
         [SerializeField] private Vector2 sampleCentre;         // Centro inicial do noise
@@ -97,8 +98,8 @@ namespace PerlinNoiseGenerator
                 if (!newVisibleChunks.Contains(chunk))
                 {
                     //activeChunks[chunk].SetActive(false);
-                    Destroy(activeChunks[chunk]);
                     chunksToRemove.Add(chunk);
+                    Destroy(activeChunks[chunk]);
                 }
             }
 
@@ -115,9 +116,9 @@ namespace PerlinNoiseGenerator
 
             Vector2Int chunkOrigin = chunkCoord * chunkSize;
             float[,] noiseMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseSettings, chunkOrigin);
+            float[,] noiseCaveMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseCave, chunkOrigin);
             float[,] noiseTreeMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseTree, chunkOrigin);
             float[,] noiseCaveEntriesMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseCaveEntries, chunkOrigin);
-            float[,] noiseCaveMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseCave, chunkOrigin);
             float[,] noiseCloudMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseCloud, chunkOrigin);
 
             for (int i = 0; i < chunkSize * chunkSize; i++)
@@ -129,40 +130,38 @@ namespace PerlinNoiseGenerator
                 int worldX = chunkOrigin.x + x;
                 int worldZ = chunkOrigin.y - z;
 
-                int heightSpace = Mathf.FloorToInt(noiseCaveMap[x, z] * maxCaveHeight);
+                int heightColumn = Mathf.FloorToInt(noiseCaveMap[x, z] * maxCaveHeight);
+ 
+                //terrain
+                float height = noiseMap[x, z] * maxTerrainHeight;
+                int terrainHeight = Mathf.FloorToInt(height);
+
+                //trees
+                float treeChance = noiseTreeMap[x, z];
+
+                //caveEntries
+                float caveChance = noiseCaveEntriesMap[x, z];
 
                 if (isInsideCave() || isCloseToCave())
                 {
-                    //noiseCaveMap
-                    GenerateCaveBlocks(heightSpace, worldX, worldZ, chunkParent.transform);
-                    //yield return null;
+                    GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform);
 
-                    if (i % (blocksGeneratedByFrame/8) == 0) // A cada X blocos gerados, espera um frame
+                    if (i % (blocksGeneratedByFrame) == 0) // A cada X blocos gerados, espera um frame
                         yield return null;
                 }
-                else { 
-                    //terrain
-                    float height = noiseMap[x, z] * maxTerrainHeight;
-                    int terrainHeight = Mathf.FloorToInt(height);
 
-                    //trees
-                    float treeChance = noiseTreeMap[x, z];
+                GenerateVerticalBlocks(chunkParent.transform, worldX, worldZ, terrainHeight, seaLevel, treeChance, caveChance);
 
-                    //caveEntries
-                    float caveChance = noiseCaveEntriesMap[x, z];
-
-                    GenerateVerticalBlocks(chunkParent.transform, worldX, worldZ, terrainHeight, seaLevel, treeChance, caveChance);
-
-                    float hasCloud = noiseCloudMap[x, z];
-                    if (hasCloud > cloudThreshold)
-                    {
-                        Vector3 cloudPosition = new Vector3(worldX, cloudHeigh, worldZ);
-                        Instantiate(cloud, cloudPosition, Quaternion.identity, chunkParent.transform);
-                    }
+                float hasCloud = noiseCloudMap[x, z];
+                if (hasCloud > cloudThreshold)
+                {
+                    Vector3 cloudPosition = new Vector3(worldX, cloudHeigh, worldZ);
+                    Instantiate(cloud, cloudPosition, Quaternion.identity, chunkParent.transform);
+                }
                     
-                    if (i % blocksGeneratedByFrame == 0) // A cada X blocos gerados, espera um frame
-                        yield return null;
-                }
+                if (i % blocksGeneratedByFrame == 0) // A cada X blocos gerados, espera um frame
+                    yield return null;
+
             }
 
             activeChunks.Add(chunkCoord, chunkParent);
@@ -173,14 +172,15 @@ namespace PerlinNoiseGenerator
         {
             for (int y = 0; y <= Mathf.Max(terrainHeight, seaLevel); y++)
             {
-                renderElements(treeChance, caveChance, terrainHeight, y, worldX, worldZ, parent);
+                bool hasCave = renderElements(treeChance, caveChance, terrainHeight, y, worldX, worldZ, parent);
 
-                renderBlocks(terrainHeight, y, worldX, worldZ, parent);
+                if (!hasCave)
+                    renderBlocks(terrainHeight, y, worldX, worldZ, parent);
                 
             }
         }
 
-        private void renderElements(float treeChance, float caveChance, int terrainHeight, int y, int worldX, int worldZ, Transform parent)
+        private bool renderElements(float treeChance, float caveChance, int terrainHeight, int y, int worldX, int worldZ, Transform parent)
         {
             if (y > seaLevel)
             {
@@ -188,7 +188,7 @@ namespace PerlinNoiseGenerator
                 {
                     Vector3 cavePosition = new Vector3(worldX, terrainHeight, worldZ);
                     Instantiate(caveEntry, cavePosition, Quaternion.identity, parent);
-                    return;
+                    return true;
                 }
 
                 if (treeChance >= treeThreshold && terrainHeight == y)
@@ -197,6 +197,7 @@ namespace PerlinNoiseGenerator
                     Instantiate(tree, treePosition, Quaternion.identity, parent);
                 }
             }
+            return false;
         }
 
         private void renderBlocks(int terrainHeight, int y, int worldX, int worldZ, Transform parent)
@@ -226,25 +227,12 @@ namespace PerlinNoiseGenerator
                 Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
         }
 
-        private void GenerateCaveBlocks(int heightSpace, int worldX, int worldZ, Transform parent)
+        private void GenerateCaveBlocks(int heightColumn, int worldX, int worldZ, Transform parent)
         {
             GameObject blockToSpawn = stoneBlock;
-            //heightSpace = Mathf.Max(heightSpace, 4);
-            for (int y = 0; y < maxCaveHeight; y++)
-            {
-                Debug.Log(heightSpace);//5
 
-                int numberOfBlocks = maxCaveHeight - heightSpace;//6
-
-                int blocksOfBase = numberOfBlocks / 2;
-                int blocksOfCeil = (numberOfBlocks + 1) / 2;
-
-                if (y == blocksOfBase - 1 || y == heightSpace + blocksOfCeil)//|| y == 0 || y == maxCaveHeight-1
-                {
-                    Vector3 blockPosition = new Vector3(worldX, y, worldZ);
-                    Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
-                }
-            }
+            Vector3 blockPosition = new Vector3(worldX, heightColumn - maxCaveHeight, worldZ);
+            Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
         }
 
         public bool isTerrainGenerated()
