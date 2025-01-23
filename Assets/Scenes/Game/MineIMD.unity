@@ -15,8 +15,8 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 0.53999996, g: 0.7799999, b: 0.9, a: 1}
-  m_FogMode: 3
+  m_FogColor: {r: 0.73202205, g: 0.8346415, b: 0.8867924, a: 1}
+  m_FogMode: 1
   m_FogDensity: 0.0125
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1733874, g: 0.2167395, b: 0.29880914, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -252,7 +252,7 @@ PrefabInstance:
     - target: {fileID: 8762286023885395322, guid: 9c489a8547f4d9e4387da15a4ff82c81,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.0999999
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8762286023885395322, guid: 9c489a8547f4d9e4387da15a4ff82c81,
         type: 3}
@@ -262,7 +262,7 @@ PrefabInstance:
     - target: {fileID: 8762286023885395322, guid: 9c489a8547f4d9e4387da15a4ff82c81,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8762286023885395322, guid: 9c489a8547f4d9e4387da15a4ff82c81,
         type: 3}
@@ -548,7 +548,7 @@ PrefabInstance:
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.0999999
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74,
         type: 3}
@@ -558,7 +558,7 @@ PrefabInstance:
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74,
         type: 3}
@@ -938,7 +938,7 @@ PrefabInstance:
     - target: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
@@ -948,7 +948,7 @@ PrefabInstance:
     - target: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
@@ -1374,7 +1374,7 @@ MonoBehaviour:
   noiseSettings:
     normalizeMode: 1
     scale: 50
-    octaves: 6
+    octaves: 5
     persistance: 0.6
     lacunarity: 1
     seed: 1
@@ -1387,18 +1387,27 @@ MonoBehaviour:
     lacunarity: 1.5
     seed: 0
     offset: {x: 0, y: 0}
-  noiseCave:
-    normalizeMode: 1
+  noiseCaveEntries:
+    normalizeMode: 0
     scale: 1
-    octaves: 5
-    persistance: 0.5
+    octaves: 6
+    persistance: 0.6
     lacunarity: 2
     seed: 0
     offset: {x: 0, y: 0}
+  noiseCave:
+    normalizeMode: 1
+    scale: 40
+    octaves: 4
+    persistance: 0.5
+    lacunarity: 1
+    seed: 0
+    offset: {x: 0, y: 0}
   sampleCentre: {x: 0, y: 0}
-  chunkSize: 51
+  chunkSize: 99
   maxTerrainHeight: 15
   seaLevel: 5
+  maxCaveHeight: 11
   dirtBlock: {fileID: 2777720406066224087, guid: 73f8dae40f7680c4280bbe6fa5a8ffa7,
     type: 3}
   grassBlock: {fileID: 7246785239317824827, guid: 63b9c007c243e654caa61efa369e2023,
@@ -1410,11 +1419,13 @@ MonoBehaviour:
   sandBlock: {fileID: 5525891483026002785, guid: 186d068de5a9b0146ab5f31e35f11514,
     type: 3}
   tree: {fileID: 3625831089587879760, guid: e9c351b0a350d9b4eb6d9cf364b27841, type: 3}
-  treeThreshold: 0.75
-  cave: {fileID: 3271129465080921083, guid: 2ee9b7008f5936243927fb8ef49ffd2d, type: 3}
-  caveThreshold: 0.88
+  caveEntry: {fileID: 3271129465080921083, guid: 2ee9b7008f5936243927fb8ef49ffd2d,
+    type: 3}
+  treeThreshold: 0.73
+  caveThreshold: 0.96
   player: {fileID: 1828424806}
-  blocksGeneratedByFrame: 100
+  blocksGeneratedByFrame: 50
+  inCave: 0
 --- !u!4 &1913596012
 Transform:
   m_ObjectHideFlags: 0

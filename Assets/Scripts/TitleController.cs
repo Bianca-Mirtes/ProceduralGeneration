@@ -14,10 +14,10 @@ public class FadeOut : MonoBehaviour
 
     private IEnumerator FadeOutCoroutine()
     {
-        yield return new WaitForSeconds(3f); // Espera 3 segundos antes de começar o fade
+        yield return new WaitForSeconds(7f); // Espera 3 segundos antes de começar o fade
 
         float timeElapsed = 0f;
-        float duration = 0.5f;
+        float duration = 1f;
 
         while (timeElapsed < duration)
         {
