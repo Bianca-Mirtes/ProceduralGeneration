@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1733874, g: 0.2167395, b: 0.29880914, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -221,7 +221,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 271017382}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -444,7 +444,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.91774046, b: 0.6933962, a: 1}
-  m_Intensity: 0.5
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1405,7 +1405,7 @@ MonoBehaviour:
     offset: {x: 0, y: 0}
   noiseCloud:
     normalizeMode: 0
-    scale: 10
+    scale: 14
     octaves: 2
     persistance: 0.6
     lacunarity: 2
@@ -1432,6 +1432,7 @@ MonoBehaviour:
   cloud: {fileID: 4579906011229253316, guid: 9832802c7c1097547b904838ac3f7670, type: 3}
   treeThreshold: 0.73
   caveThreshold: 0.96
+  cloudThreshold: 0.775
   player: {fileID: 1828424806}
   blocksGeneratedByFrame: 50
   cloudHeigh: 20
