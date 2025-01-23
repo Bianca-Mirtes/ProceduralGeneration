@@ -14,6 +14,7 @@ public class FadeOut : MonoBehaviour
 
     private IEnumerator FadeOutCoroutine()
     {
+        canvasGroup.alpha = 1f;
         yield return new WaitForSeconds(7f); // Espera 3 segundos antes de começar o fade
 
         float timeElapsed = 0f;

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.1733874, g: 0.2167395, b: 0.29880914, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -170,21 +170,21 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 271017382}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.21698111, g: 0.1942448, b: 0.18115875, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: cd8a81a17fb4ddd4a87b4dfb835bd20d, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1403,6 +1403,14 @@ MonoBehaviour:
     lacunarity: 1
     seed: 0
     offset: {x: 0, y: 0}
+  noiseCloud:
+    normalizeMode: 0
+    scale: 10
+    octaves: 2
+    persistance: 0.6
+    lacunarity: 2
+    seed: 0
+    offset: {x: 0, y: 0}
   sampleCentre: {x: 0, y: 0}
   chunkSize: 99
   maxTerrainHeight: 15
@@ -1421,10 +1429,12 @@ MonoBehaviour:
   tree: {fileID: 3625831089587879760, guid: e9c351b0a350d9b4eb6d9cf364b27841, type: 3}
   caveEntry: {fileID: 3271129465080921083, guid: 2ee9b7008f5936243927fb8ef49ffd2d,
     type: 3}
+  cloud: {fileID: 4579906011229253316, guid: 9832802c7c1097547b904838ac3f7670, type: 3}
   treeThreshold: 0.73
   caveThreshold: 0.96
   player: {fileID: 1828424806}
   blocksGeneratedByFrame: 50
+  cloudHeigh: 20
   inCave: 0
 --- !u!4 &1913596012
 Transform:
