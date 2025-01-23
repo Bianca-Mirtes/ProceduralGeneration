@@ -40,7 +40,7 @@ namespace PerlinNoiseGenerator
         [SerializeField] private int blocksGeneratedByFrame;   // Qtdd de blocos gerados a cada frame para evitar gargalos
         [SerializeField] private int cloudHeigh = 20;
 
-        public bool inCave = false;
+        [SerializeField] private bool inCave = false, closeToCave = false;
 
         private Dictionary<Vector2Int, GameObject> activeChunks = new Dictionary<Vector2Int, GameObject>();
         private Vector2Int currentChunk;     // Chunk em que o player esta
@@ -60,6 +60,14 @@ namespace PerlinNoiseGenerator
             {
                 currentChunk = newChunk;
                 UpdateVisibleChunks();
+            }
+
+            if (closeToCave) 
+            {
+                GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform);
+
+                if (i % (blocksGeneratedByFrame) == 0) // A cada X blocos gerados, espera um frame
+                    yield return null;
             }
         }
 
@@ -142,7 +150,7 @@ namespace PerlinNoiseGenerator
                 //caveEntries
                 float caveChance = noiseCaveEntriesMap[x, z];
 
-                if (isInsideCave())
+                if (inCave)
                 {
                     GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform);
 
@@ -243,12 +251,12 @@ namespace PerlinNoiseGenerator
 
         public bool isUnderWater()
         {
-            return player.localPosition.y < -2 && !isInsideCave();
+            return player.localPosition.y < -2 && !inCave;
         }
-
-        public bool isInsideCave()
+        
+        public void SetIsCloseToCave(bool closeToCave)
         {
-            return inCave;
+            this.closeToCave = closeToCave;
         }
     }
 }

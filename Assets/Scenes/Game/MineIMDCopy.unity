@@ -20,13 +20,13 @@ RenderSettings:
   m_FogDensity: 0.0125
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.48567107, g: 0.70267546, b: 0.9622642, a: 1}
+  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.7216981, g: 0.83531046, b: 1, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -674,7 +674,7 @@ Transform:
   m_GameObject: {fileID: 1006706872}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.09, z: 1.66}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -715,8 +715,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
-  m_Range: 1020
+  m_Intensity: 1
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -1006,9 +1006,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1254160754}
+  - component: {fileID: 1254160756}
+  - component: {fileID: 1254160755}
+  - component: {fileID: 1254160757}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1031,6 +1034,69 @@ Transform:
   - {fileID: 1828424806}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1254160755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254160753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 401c25e273b87b69188c014d0c311118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockGenerator: {fileID: 1913596010}
+--- !u!136 &1254160756
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254160753}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.51
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 7, z: 0}
+--- !u!54 &1254160757
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254160753}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 1
 --- !u!1 &1437718139
 GameObject:
   m_ObjectHideFlags: 0
@@ -1396,22 +1462,22 @@ MonoBehaviour:
     offset: {x: 0, y: 0}
   noiseCave:
     normalizeMode: 1
-    scale: 50
-    octaves: 2
-    persistance: 0.6
+    scale: 40
+    octaves: 4
+    persistance: 0.5
     lacunarity: 1
     seed: 0
     offset: {x: 0, y: 0}
   noiseOres:
-    normalizeMode: 1
-    scale: 2
-    octaves: 4
+    normalizeMode: 0
+    scale: 50
+    octaves: 6
     persistance: 0.6
     lacunarity: 2
     seed: 0
     offset: {x: 0, y: 0}
   noiseCloud:
-    normalizeMode: 1
+    normalizeMode: 0
     scale: 14
     octaves: 2
     persistance: 0.6
@@ -1422,7 +1488,7 @@ MonoBehaviour:
   chunkSize: 33
   maxTerrainHeight: 15
   seaLevel: 5
-  maxCaveHeight: 7
+  maxCaveHeight: 11
   dirtBlock: {fileID: 2777720406066224087, guid: 73f8dae40f7680c4280bbe6fa5a8ffa7,
     type: 3}
   grassBlock: {fileID: 7246785239317824827, guid: 63b9c007c243e654caa61efa369e2023,
@@ -1438,12 +1504,13 @@ MonoBehaviour:
     type: 3}
   cloud: {fileID: 4579906011229253316, guid: 9832802c7c1097547b904838ac3f7670, type: 3}
   treeThreshold: 0.73
-  caveThreshold: 0.96
+  caveThreshold: 0.9999
   cloudThreshold: 0.775
   player: {fileID: 1828424806}
   blocksGeneratedByFrame: 50
   cloudHeigh: 20
   inCave: 0
+  closeToCave: 0
 --- !u!4 &1913596012
 Transform:
   m_ObjectHideFlags: 0
