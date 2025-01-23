@@ -39,7 +39,7 @@ namespace PerlinNoiseGenerator
         [SerializeField] private int blocksGeneratedByFrame;   // Qtdd de blocos gerados a cada frame para evitar gargalos
         [SerializeField] private int cloudHeigh = 20;
 
-        public bool inCave = false;
+        [SerializeField] private bool inCave = false, closeToCave = false;
 
         private Dictionary<Vector2Int, GameObject> activeChunks = new Dictionary<Vector2Int, GameObject>();
         private Vector2Int currentChunk;     // Chunk em que o player esta
@@ -131,7 +131,7 @@ namespace PerlinNoiseGenerator
 
                 int heightSpace = Mathf.FloorToInt(noiseCaveMap[x, z] * maxCaveHeight);
 
-                if (isInsideCave())
+                if (isInsideCave() || isCloseToCave())
                 {
                     //noiseCaveMap
                     GenerateCaveBlocks(heightSpace, worldX, worldZ, chunkParent.transform);
@@ -261,6 +261,16 @@ namespace PerlinNoiseGenerator
         public bool isInsideCave()
         {
             return inCave;
+        }
+
+        public bool isCloseToCave()
+        {
+            return closeToCave;
+        }
+
+        public void SetIsCloseToCave(bool closeToCave)
+        {
+            this.closeToCave = closeToCave;
         }
     }
 }

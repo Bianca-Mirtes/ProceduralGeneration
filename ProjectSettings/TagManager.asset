@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CinemachineTarget
   - Tree
+  - PortalCave
   layers:
   - Default
   - TransparentFX
