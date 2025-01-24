@@ -29,5 +29,6 @@ public class LightingController : MonoBehaviour
                 mainCamera.backgroundColor = surfaceBgColor;
             }
         }
+        RenderSettings.fog = !isCave;
     }
 }
