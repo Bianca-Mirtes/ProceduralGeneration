@@ -70,12 +70,11 @@ namespace PerlinNoiseGenerator
             if(player.localPosition.y < -6)
             {
                 inCave = true;
-                lightingController.SetLighting(true);
-            }
+            }else
             {
                 inCave = false;
-                lightingController.SetLighting(false);
             }
+            lightingController.SetLighting(inCave);
         }
 
         Vector2Int GetPlayerChunk()
@@ -185,8 +184,7 @@ namespace PerlinNoiseGenerator
             }
             closeToCave = false;
 
-            if(!closeToCave && !inCave)
-                activeChunks.Add(chunkCoord, chunkParent);
+            activeChunks.Add(chunkCoord, chunkParent);
             if (!isTerrain)
                 tittleController.fadeOutTitle();
             isTerrain = true;
