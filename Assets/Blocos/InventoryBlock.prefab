@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4008932330931154318}
   - component: {fileID: 2715152568005399804}
   - component: {fileID: 2722326683880253977}
+  - component: {fileID: 3827879273128070518}
   m_Layer: 0
   m_Name: InventoryBlock
   m_TagString: Untagged
@@ -99,9 +100,23 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 8.87925, y: 2.0500307, z: 8.87925}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3827879273128070518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526033627095077735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3524a0c5f6b97e0982a3cbeaf324dfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eIndicatorPrefab: {fileID: 6755055157167624300, guid: cc7efa23c30647321a2e6d65505afd58,
+    type: 3}

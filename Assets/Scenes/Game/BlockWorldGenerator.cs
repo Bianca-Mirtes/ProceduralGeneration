@@ -253,9 +253,6 @@ namespace PerlinNoiseGenerator
 
         private void GenerateCaveBlocks(int heightColumn, int worldX, int worldZ, Transform parent, GameObject blockToSpawn)
         {
-            GameObject blockToSpawn = stoneBlock;
-
-            
             Vector2 blockPosition = new Vector2(worldX, heightColumn - maxCaveHeight);
             
             // Verifica se o bloco ja foi coletado
