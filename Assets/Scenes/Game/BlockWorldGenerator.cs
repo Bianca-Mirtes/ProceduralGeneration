@@ -30,6 +30,7 @@ namespace PerlinNoiseGenerator
         [SerializeField] private GameObject tree;
         [SerializeField] private GameObject caveEntry;
         [SerializeField] private GameObject cloud;
+        [SerializeField] private GameObject ores;
 
         [Header("Variables")]
         [SerializeField] private float treeThreshold = .7f;
@@ -41,10 +42,14 @@ namespace PerlinNoiseGenerator
         [SerializeField] private int cloudHeigh = 20;
 
         [SerializeField] private bool inCave = false, closeToCave = false;
+        //private bool oldCloseToCave = false;
 
         private Dictionary<Vector2Int, GameObject> activeChunks = new Dictionary<Vector2Int, GameObject>();
         private Vector2Int currentChunk;     // Chunk em que o player esta
         private bool isTerrain = false;
+
+        [SerializeField] private TittleController tittleController;
+        [SerializeField] private LightingController lightingController;
 
         void Start()
         {
@@ -62,12 +67,14 @@ namespace PerlinNoiseGenerator
                 UpdateVisibleChunks();
             }
 
-            if (closeToCave) 
+            if(player.localPosition.y < -6)
             {
-                GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform);
-
-                if (i % (blocksGeneratedByFrame) == 0) // A cada X blocos gerados, espera um frame
-                    yield return null;
+                inCave = true;
+                lightingController.SetLighting(true);
+            }
+            {
+                inCave = false;
+                lightingController.SetLighting(false);
             }
         }
 
@@ -128,6 +135,7 @@ namespace PerlinNoiseGenerator
             float[,] noiseTreeMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseTree, chunkOrigin);
             float[,] noiseCaveEntriesMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseCaveEntries, chunkOrigin);
             float[,] noiseCloudMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseCloud, chunkOrigin);
+            float[,] noiseOresMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseOres, chunkOrigin);
 
             for (int i = 0; i < chunkSize * chunkSize; i++)
             {
@@ -150,13 +158,17 @@ namespace PerlinNoiseGenerator
                 //caveEntries
                 float caveChance = noiseCaveEntriesMap[x, z];
 
-                if (inCave)
+                GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform, stoneBlock);
+                if (noiseOresMap[x, z] > .8f)
                 {
-                    GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform);
-
-                    if (i % (blocksGeneratedByFrame) == 0) // A cada X blocos gerados, espera um frame
-                        yield return null;
+                    GenerateCaveBlocks(heightColumn + 1, worldX, worldZ, chunkParent.transform, ores);
                 }
+
+                if (i % (blocksGeneratedByFrame) == 0) // A cada X blocos gerados, espera um frame
+                    yield return null;
+
+                if (closeToCave)
+                    continue;
 
                 GenerateVerticalBlocks(chunkParent.transform, worldX, worldZ, terrainHeight, seaLevel, treeChance, caveChance);
 
@@ -171,8 +183,12 @@ namespace PerlinNoiseGenerator
                     yield return null;
 
             }
+            closeToCave = false;
 
-            activeChunks.Add(chunkCoord, chunkParent);
+            if(!closeToCave && !inCave)
+                activeChunks.Add(chunkCoord, chunkParent);
+            if (!isTerrain)
+                tittleController.fadeOutTitle();
             isTerrain = true;
         }
 
@@ -235,7 +251,7 @@ namespace PerlinNoiseGenerator
                 Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
         }
 
-        private void GenerateCaveBlocks(int heightColumn, int worldX, int worldZ, Transform parent)
+        private void GenerateCaveBlocks(int heightColumn, int worldX, int worldZ, Transform parent, GameObject blockToSpawn)
         {
             GameObject blockToSpawn = stoneBlock;
 
@@ -262,7 +278,7 @@ namespace PerlinNoiseGenerator
 
         public bool isUnderWater()
         {
-            return player.localPosition.y < -2 && !inCave;
+            return player.localPosition.y < -2 && player.localPosition.y > -6 && !inCave;
         }
         
         public void SetIsCloseToCave(bool closeToCave)
