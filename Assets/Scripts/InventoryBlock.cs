@@ -25,6 +25,7 @@ public class InventoryBlock : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Player is nearby inventory block");
         if (other.CompareTag("Player"))
         {
             isPlayerNearby = true;
@@ -43,7 +44,7 @@ public class InventoryBlock : MonoBehaviour
 
     void CollectBlock()
     {
-        Vector2 blockPosition = new Vector2(transform.position.x, transform.position.y);
+        Vector2 blockPosition = new Vector2(transform.position.x, transform.position.z);
         if (!Inventory.Instance.IsPositionCollected(blockPosition))
         {
             Inventory.Instance.AddPosition(blockPosition);
