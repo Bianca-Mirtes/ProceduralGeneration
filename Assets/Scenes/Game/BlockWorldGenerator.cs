@@ -30,6 +30,7 @@ namespace PerlinNoiseGenerator
         [SerializeField] private GameObject tree;
         [SerializeField] private GameObject caveEntry;
         [SerializeField] private GameObject cloud;
+        [SerializeField] private GameObject ores;
 
         [Header("Variables")]
         [SerializeField] private float treeThreshold = .7f;
@@ -45,6 +46,9 @@ namespace PerlinNoiseGenerator
         private Dictionary<Vector2Int, GameObject> activeChunks = new Dictionary<Vector2Int, GameObject>();
         private Vector2Int currentChunk;     // Chunk em que o player esta
         private bool isTerrain = false;
+
+        [SerializeField] private TittleController tittleController;
+        [SerializeField] private LightingController lightingController;
 
         void Start()
         {
@@ -62,13 +66,18 @@ namespace PerlinNoiseGenerator
                 UpdateVisibleChunks();
             }
 
-            if (closeToCave) 
+            if(closeToCave && player.localPosition.z < -5)
             {
-                GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform);
-
-                if (i % (blocksGeneratedByFrame) == 0) // A cada X blocos gerados, espera um frame
-                    yield return null;
+                inCave = true;
             }
+
+            //if (closeToCave) 
+            //{
+            //    GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform);
+
+            //    if (i % (blocksGeneratedByFrame) == 0) // A cada X blocos gerados, espera um frame
+            //        yield return null;
+            //}
         }
 
         Vector2Int GetPlayerChunk()
@@ -90,6 +99,14 @@ namespace PerlinNoiseGenerator
                 {
                     Vector2Int chunkCoord = currentChunk + new Vector2Int(xOffset, zOffset);
                     newVisibleChunks.Add(chunkCoord);
+
+                    if (closeToCave)
+                    {
+                        //GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform);
+
+                        //if (i % (blocksGeneratedByFrame) == 0) // A cada X blocos gerados, espera um frame
+                        //    yield return null;
+                    }else
 
                     if (!activeChunks.ContainsKey(chunkCoord))
                     {
@@ -128,6 +145,7 @@ namespace PerlinNoiseGenerator
             float[,] noiseTreeMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseTree, chunkOrigin);
             float[,] noiseCaveEntriesMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseCaveEntries, chunkOrigin);
             float[,] noiseCloudMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseCloud, chunkOrigin);
+            float[,] noiseOresMap = PerlinNoiseGenerator.Noise.GenerateNoiseMap(chunkSize, chunkSize, noiseOres, chunkOrigin);
 
             for (int i = 0; i < chunkSize * chunkSize; i++)
             {
@@ -152,10 +170,14 @@ namespace PerlinNoiseGenerator
 
                 if (inCave)
                 {
-                    GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform);
+                    GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform, stoneBlock);
+                    if (noiseOresMap[x, z] > .8f)
+                    {
+                        GenerateCaveBlocks(heightColumn + 1, worldX, worldZ, chunkParent.transform, ores);
+                    }
 
-                    if (i % (blocksGeneratedByFrame) == 0) // A cada X blocos gerados, espera um frame
-                        yield return null;
+                    //if (i % (blocksGeneratedByFrame) == 0) // A cada X blocos gerados, espera um frame
+                    //    yield return null;
                 }
 
                 GenerateVerticalBlocks(chunkParent.transform, worldX, worldZ, terrainHeight, seaLevel, treeChance, caveChance);
@@ -173,6 +195,8 @@ namespace PerlinNoiseGenerator
             }
 
             activeChunks.Add(chunkCoord, chunkParent);
+            if (!isTerrain)
+                tittleController.fadeOutTitle();
             isTerrain = true;
         }
 
@@ -235,10 +259,8 @@ namespace PerlinNoiseGenerator
                 Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
         }
 
-        private void GenerateCaveBlocks(int heightColumn, int worldX, int worldZ, Transform parent)
+        private void GenerateCaveBlocks(int heightColumn, int worldX, int worldZ, Transform parent, GameObject blockToSpawn)
         {
-            GameObject blockToSpawn = stoneBlock;
-
             Vector3 blockPosition = new Vector3(worldX, heightColumn - maxCaveHeight, worldZ);
             Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
         }
