@@ -157,10 +157,10 @@ namespace PerlinNoiseGenerator
                 //caveEntries
                 float caveChance = noiseCaveEntriesMap[x, z];
 
-                GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform, stoneBlock);
+                GenerateCaveBlocks(heightColumn, worldX, worldZ, chunkParent.transform, stoneBlock, false);
                 if (noiseOresMap[x, z] > .8f)
                 {
-                    GenerateCaveBlocks(heightColumn + 1, worldX, worldZ, chunkParent.transform, ores);
+                    GenerateCaveBlocks(heightColumn + 1, worldX, worldZ, chunkParent.transform, ores, true);
                 }
 
                 if (i % (blocksGeneratedByFrame) == 0) // A cada X blocos gerados, espera um frame
@@ -249,10 +249,27 @@ namespace PerlinNoiseGenerator
                 Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
         }
 
-        private void GenerateCaveBlocks(int heightColumn, int worldX, int worldZ, Transform parent, GameObject blockToSpawn)
+        private void GenerateCaveBlocks(int heightColumn, int worldX, int worldZ, Transform parent, GameObject blockToSpawn, bool isOre)
         {
-            Vector3 blockPosition = new Vector3(worldX, heightColumn - maxCaveHeight, worldZ);
-            Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
+            int worldY = heightColumn - maxCaveHeight;
+            Vector3 spawnPosition = new Vector3(worldX, worldY, worldZ);
+
+            if (!isOre){
+                Instantiate(blockToSpawn, spawnPosition, Quaternion.identity, parent);
+                return;
+            }
+            
+            Vector2 blockPosition = new Vector2(worldX, worldZ);
+            spawnPosition = new Vector3(worldX, worldY, worldZ);
+
+            // Verifica se o bloco ja foi coletado
+            if (Inventory.Instance == null) {
+                Instantiate(blockToSpawn, spawnPosition, Quaternion.identity, parent);
+            } else if (!Inventory.Instance.IsPositionCollected(blockPosition)) {
+                Instantiate(blockToSpawn, spawnPosition, Quaternion.identity, parent);
+            } else {
+                Debug.Log("Block position already collected: " + blockPosition);
+            }
         }
 
         public bool isTerrainGenerated()

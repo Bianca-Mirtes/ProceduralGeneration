@@ -1503,6 +1503,7 @@ MonoBehaviour:
   caveEntry: {fileID: 3271129465080921083, guid: 2ee9b7008f5936243927fb8ef49ffd2d,
     type: 3}
   cloud: {fileID: 4579906011229253316, guid: 9832802c7c1097547b904838ac3f7670, type: 3}
+  ores: {fileID: 0}
   treeThreshold: 0.73
   caveThreshold: 0.9999
   cloudThreshold: 0.775
@@ -1511,6 +1512,8 @@ MonoBehaviour:
   cloudHeigh: 20
   inCave: 0
   closeToCave: 0
+  tittleController: {fileID: 271017386}
+  lightingController: {fileID: 0}
 --- !u!4 &1913596012
 Transform:
   m_ObjectHideFlags: 0
