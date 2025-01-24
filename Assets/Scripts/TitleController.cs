@@ -2,20 +2,23 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class FadeOut : MonoBehaviour
+public class TittleController : MonoBehaviour
 {
     private CanvasGroup canvasGroup;
 
     void Start()
     {
         canvasGroup = GetComponent<CanvasGroup>();
-        StartCoroutine(FadeOutCoroutine());
+        canvasGroup.alpha = 1f;
     }
 
+    public void fadeOutTitle()
+    {
+        StartCoroutine(FadeOutCoroutine());
+    }
     private IEnumerator FadeOutCoroutine()
     {
-        canvasGroup.alpha = 1f;
-        yield return new WaitForSeconds(7f); // Espera 3 segundos antes de começar o fade
+        //yield return new WaitForSeconds(7f); // Espera 3 segundos antes de começar o fade
 
         float timeElapsed = 0f;
         float duration = 1f;
