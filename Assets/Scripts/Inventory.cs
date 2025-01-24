@@ -49,6 +49,11 @@ public class Inventory : MonoBehaviour
         Debug.Log("Inventário: " + collectedPositions.Count);
     }
 
+    public int getBlocks()
+    {
+        return collectedPositions.Count;
+    }
+
     public bool IsPositionCollected(Vector2 position)
     {
         return collectedPositions.Contains(position);

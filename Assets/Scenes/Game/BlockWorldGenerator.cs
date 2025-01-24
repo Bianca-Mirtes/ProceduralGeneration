@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
+using TMPro;
+
 namespace PerlinNoiseGenerator
 {
     public class DynamicBlockWorldGenerator : MonoBehaviour
@@ -51,6 +53,8 @@ namespace PerlinNoiseGenerator
         [SerializeField] private TittleController tittleController;
         [SerializeField] private LightingController lightingController;
 
+        [SerializeField] public TextMeshProUGUI textMeshPro;
+
         void Start()
         {
             UpdateVisibleChunks();
@@ -75,6 +79,8 @@ namespace PerlinNoiseGenerator
                 inCave = false;
             }
             lightingController.SetLighting(inCave);
+
+            textMeshPro.text = "Minérios coletados: " + FindFirstObjectByType<Inventory>().getBlocks();
         }
 
         Vector2Int GetPlayerChunk()
