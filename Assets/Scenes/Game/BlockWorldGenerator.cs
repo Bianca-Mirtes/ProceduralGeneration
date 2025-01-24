@@ -239,8 +239,19 @@ namespace PerlinNoiseGenerator
         {
             GameObject blockToSpawn = stoneBlock;
 
-            Vector3 blockPosition = new Vector3(worldX, heightColumn - maxCaveHeight, worldZ);
-            Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
+            
+            Vector2 blockPosition = new Vector2(worldX, heightColumn - maxCaveHeight);
+            
+            // Verifica se o bloco ja foi coletado
+            if (!Inventory.Instance.IsPositionCollected(blockPosition))
+            {
+                Instantiate(blockToSpawn, blockPosition, Quaternion.identity, parent);
+                Inventory.Instance.AddPosition(blockPosition);
+            }
+            else
+            {
+                Debug.Log("Block position already collected: " + blockPosition);
+            }
         }
 
         public bool isTerrainGenerated()
